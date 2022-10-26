@@ -11,8 +11,6 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-
-
         for ($i = 0; $i < 10; $i++) {
             $customer = new Product();
             $customer->setTitle('testname');

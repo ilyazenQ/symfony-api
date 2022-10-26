@@ -2,17 +2,16 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProductController extends AbstractController
+class ReportController extends AbstractController
 {
-
-    #[Route('/products', name: 'product.show')]
-    public function index(ProductRepository $repository): Response
+    #[Route('/report/daily', name: 'report.daily')]
+    public function index(OrderRepository $repository): Response
     {
         return $this->json($repository->findAll());
     }
