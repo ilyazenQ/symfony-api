@@ -56,7 +56,26 @@ class OrderService
         return $order;
     }
 
-    public function editOrder() {
+    public function editOrder(
+        Request $request,
+        OrderRepository $repository,
+        ProductRepository $productRepository,
+        EntityManagerInterface $entityManager
+    ) {
+        (new CheckProductsRequestAction())->execute($request, $productRepository);
 
+        $order = $repository->find($request->get('id'));
+
+        if($order->isApproved()) {
+            throw new \Exception('Cant change. Order approved');
+        }
+
+        $order->setPrice((new CalcOrderPriceAction())->execute($request, $productRepository));
+        $order->setProducts($request->request->get('products'));
+
+        $entityManager->persist($order);
+        $entityManager->flush();
+
+        return $order;
     }
 }
