@@ -44,6 +44,16 @@ class OrderRepository extends ServiceEntityRepository
         }
     }
 
+        public function getApprovedList(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->where('o.approved = true')
+            ->orderBy('o.approved_at', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+    }
+
 //    /**
 //     * @return Order[] Returns an array of Order objects
 //     */

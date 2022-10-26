@@ -24,7 +24,8 @@ class OrderService
 
         $order = new Order();
         $order->setPrice((new CalcOrderPriceAction())->execute($request, $productRepository));
-        $order->setApproved(false);
+        $order->setApproved($request->request->get('approved') ?? false);
+        $order->setApprovedAt(new \DateTime($request->request->get('approved_at')) ?? null);
         $order->setProducts($request->request->get('products'));
 
         $entityManager->persist($order);
