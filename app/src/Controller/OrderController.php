@@ -11,6 +11,7 @@ use App\Services\ApiService;
 use App\Services\OrderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -35,7 +36,7 @@ class OrderController extends AbstractController
         Request                $request,
         EntityManagerInterface $entityManager,
         OrderService           $service,
-    )
+    ): JsonResponse
     {
         $request = $this->apiService->transformJsonBody($request);
         return $this->json($service->createOrder($request, $this->productRepository, $entityManager), 201);
@@ -47,7 +48,7 @@ class OrderController extends AbstractController
         EntityManagerInterface $entityManager,
         OrderRepository        $repository,
         OrderService           $service,
-    )
+    ): JsonResponse
     {
         $request = $this->apiService->transformJsonBody($request);
         return $this->json($service->editOrder($request, $repository, $this->productRepository, $entityManager), 200);
@@ -59,7 +60,7 @@ class OrderController extends AbstractController
         EntityManagerInterface $entityManager,
         OrderRepository        $repository,
         OrderService           $service,
-    )
+    ): JsonResponse
     {
         return $this->json($service->approveOrder($request, $repository, $entityManager), 200);
     }

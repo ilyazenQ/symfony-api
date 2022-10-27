@@ -20,7 +20,6 @@ class Product
     #[ORM\Column]
     private ?int $price = null;
 
-
     public function getId(): ?int
     {
         return $this->id;

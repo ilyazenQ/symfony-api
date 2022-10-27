@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Actions\ProcessProductListAction;
 use App\Entity\Product;
+use App\Utils\Paginator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +21,15 @@ class ProductRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Product::class);
+    }
+
+    public function paginateProduct(array $action)
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->orderBy('p.'.$action['orderField'], $action['order']);
+
+
+        return (new Paginator($qb))->pagination($action['page']);
     }
 
     public function save(Product $entity, bool $flush = false): void

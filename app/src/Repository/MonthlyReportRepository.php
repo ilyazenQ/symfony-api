@@ -23,6 +23,22 @@ class MonthlyReportRepository extends ServiceEntityRepository
         parent::__construct($registry, MonthlyReport::class);
     }
 
+    public function getReportList(array $action)
+    {
+        return $this->createQueryBuilder('r')
+            ->orderBy('r.'.$action['orderField'], $action['order'])
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getProceed()
+    {
+        return $this->createQueryBuilder('r')
+            ->select('SUM(r.total_price) as proceed')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function save(MonthlyReport $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

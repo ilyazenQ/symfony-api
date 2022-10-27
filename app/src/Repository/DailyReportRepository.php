@@ -21,6 +21,23 @@ class DailyReportRepository extends ServiceEntityRepository
         parent::__construct($registry, DailyReport::class);
     }
 
+
+    public function getReportList(array $action)
+    {
+        return $this->createQueryBuilder('r')
+            ->orderBy('r.' . $action['orderField'], $action['order'])
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getProceed()
+    {
+        return $this->createQueryBuilder('r')
+            ->select('SUM(r.total_price) as proceed')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function save(DailyReport $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

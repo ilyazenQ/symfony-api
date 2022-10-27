@@ -21,11 +21,10 @@ class ReportService
         $this->approvedOrders = $repository->getApprovedList();
     }
 
-    public function reportProcessing(
+    private function reportProcessing(
         $interval,
         EntityManagerInterface $entityManager,
         $reportClassName
-
     )
     {
         $approvedOrders = $this->approvedOrders;
@@ -59,7 +58,6 @@ class ReportService
 
             $groupedOrders[$groupedOrdersKey]['total_count'] = $totalCount;
             $groupedOrders[$groupedOrdersKey]['total_price'] = $totalPrice;
-
 
             $report = new $reportClassName();
             $report->setOrders($orders);
@@ -100,7 +98,7 @@ class ReportService
         $this->reportProcessing($interval, $this->entityManager, 'App\Entity\MonthlyReport');
     }
 
-    public function deleteReport(string $tableName, EntityManagerInterface $entityManager,
+    private function deleteReport(string $tableName, EntityManagerInterface $entityManager,
     )
     {
         $connection = $entityManager->getConnection();
@@ -110,7 +108,7 @@ class ReportService
     }
 
 
-    public function getDays($begin, $end)
+    private function getDays($begin, $end)
     {
         $datetime1 = new Carbon($begin->format('d-m-Y'));
         $datetime2 = new Carbon($end->format('d-m-Y'));
@@ -128,7 +126,7 @@ class ReportService
         return $arr;
     }
 
-    public function getWeeks($begin, $end)
+    private function getWeeks($begin, $end)
     {
         $datetime1 = new Carbon($begin->format('d-m-Y'));
         $datetime2 = new Carbon($end->format('d-m-Y'));
@@ -156,7 +154,7 @@ class ReportService
 
     }
 
-    public function getMonths($begin, $end)
+    private function getMonths($begin, $end)
     {
         $datetime1 = new Carbon($begin->format('d-m-Y'));
         $datetime2 = new Carbon($end->format('d-m-Y'));
