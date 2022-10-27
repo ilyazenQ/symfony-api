@@ -25,6 +25,9 @@ class Order
     private ?int $price = null;
 
     #[ORM\Column(nullable: true)]
+    private ?int $total_count = null;
+
+    #[ORM\Column(nullable: true)]
     private ?DateTime $approved_at = null;
 
     /**
@@ -82,6 +85,24 @@ class Order
     public function setPrice(?int $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTotalCount(): ?int
+    {
+        return $this->total_count;
+    }
+
+    /**
+     * @param int|null $total_count
+     */
+    public function setTotalCount(?int $total_count): self
+    {
+        $this->total_count = $total_count;
 
         return $this;
     }

@@ -35,6 +35,10 @@ services:
     volumes:
       - mysql:/var/lib/mysql
     container_name: ${PROJECT_NAME}-mysql
+    ports:
+      - "3306:3306"
+    security_opt:
+      - seccomp:unconfined
     restart: always
     environment:
       - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"

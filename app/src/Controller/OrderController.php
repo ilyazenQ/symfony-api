@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Actions\CalcOrderPriceAction;
+use App\Actions\CalcOrderAttributesAction;
 use App\Actions\CheckProductsRequestAction;
 use App\Entity\Order;
 use App\Repository\OrderRepository;

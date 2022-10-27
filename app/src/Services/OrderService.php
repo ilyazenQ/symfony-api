@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Actions\CalcOrderPriceAction;
+use App\Actions\CalcOrderAttributeAction;
 use App\Actions\CheckProductsRequestAction;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
@@ -21,9 +21,11 @@ class OrderService
     )
     {
         (new CheckProductsRequestAction())->execute($request, $productRepository);
+        (new CalcOrderAttributeAction())->execute($request, $productRepository);
 
         $order = new Order();
-        $order->setPrice((new CalcOrderPriceAction())->execute($request, $productRepository));
+        $order->setPrice($request->request->get('price'));
+        $order->setTotalCount($request->request->get('total_count'));
         $order->setApproved($request->request->get('approved') ?? false);
         $order->setApprovedAt(new \DateTime($request->request->get('approved_at')) ?? null);
         $order->setProducts($request->request->get('products'));
@@ -64,6 +66,7 @@ class OrderService
         EntityManagerInterface $entityManager
     ) {
         (new CheckProductsRequestAction())->execute($request, $productRepository);
+        (new CalcOrderAttributeAction())->execute($request, $productRepository);
 
         $order = $repository->find($request->get('id'));
 
@@ -71,7 +74,8 @@ class OrderService
             throw new \Exception('Cant change. Order approved');
         }
 
-        $order->setPrice((new CalcOrderPriceAction())->execute($request, $productRepository));
+        $order->setPrice($request->request->get('price'));
+        $order->setTotalCount($request->request->get('total_count'));
         $order->setProducts($request->request->get('products'));
 
         $entityManager->persist($order);
