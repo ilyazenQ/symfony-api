@@ -27,7 +27,7 @@ class OrderService
         $order->setPrice($request->request->get('price'));
         $order->setTotalCount($request->request->get('total_count'));
         $order->setApproved($request->request->get('approved') ?? false);
-        $order->setApprovedAt(new \DateTime($request->request->get('approved_at')) ?? null);
+        $order->setApprovedAt($request->request->get('approved_at')? new \DateTime($request->request->get('approved_at')) : null);
         $order->setProducts($request->request->get('products'));
 
         $entityManager->persist($order);

@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Actions\ProcessProductListAction;
-use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

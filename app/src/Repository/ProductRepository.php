@@ -26,8 +26,7 @@ class ProductRepository extends ServiceEntityRepository
     public function paginateProduct(array $action)
     {
         $qb = $this->createQueryBuilder('p')
-            ->orderBy('p.'.$action['orderField'], $action['order']);
-
+            ->orderBy('p.' . $action['orderField'], $action['order']);
 
         return (new Paginator($qb))->pagination($action['page']);
     }

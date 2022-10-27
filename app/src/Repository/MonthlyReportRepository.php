@@ -26,7 +26,7 @@ class MonthlyReportRepository extends ServiceEntityRepository
     public function getReportList(array $action)
     {
         return $this->createQueryBuilder('r')
-            ->orderBy('r.'.$action['orderField'], $action['order'])
+            ->orderBy('r.' . $action['orderField'], $action['order'])
             ->getQuery()
             ->getResult();
     }
