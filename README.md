@@ -97,7 +97,7 @@ http://localhost:8081/order/21/approve/
 `
 - #### http://localhost:8081/report/daily/?order_field=<total_price/total_count>&order=<DESC/ASC>
 - #### http://localhost:8081/report/weekly/?order_field=<total_price/total_count>&order=<DESC/ASC>
-- #### http://localhost:8081/report/monthly/?order_field=<total_price/total_count>&order=<DESC/ASC> GET (Получение отчетов)<br>
+- #### http://localhost:8081/report/monthly/?order_field=<total_price/total_count>&order=<DESC/ASC> GET (Получение отчетов, Топ продаж по количеству/деньгам - через сортировку)<br>
 Пример ответа: <br>
 (orders - заказы в единицу периода,title - время начала/конца единицы периода, totalCount - общее число проданных едениц за единицу периода, totalPrice - общая стоимость за единицу периода, proceed - совокупная выручка за отчет)<br>
 `
