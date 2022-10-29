@@ -51,7 +51,20 @@ class OrderRepository extends ServiceEntityRepository
             ->orderBy('o.approved_at', 'ASC')
             ->getQuery()
             ->getResult();
+    }
 
+    public function getApprovedByDate($from,$to)
+    {
+        $qb = $this->createQueryBuilder("o");
+        $qb
+            ->where('o.approved = true')
+            ->andWhere('o.approved_at BETWEEN :from AND :to')
+            ->setParameter('from', $from )
+            ->setParameter('to', $to)
+        ;
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
     }
 
 //    /**

@@ -32,28 +32,32 @@ class ReportService
         $groupedOrders = [];
 
         // Distribution within the interval
-        foreach ($approvedOrders as $orderKey => $order) {
-            $orderDate = $order->getApprovedAt();
+
 
             foreach ($interval as $dayKey => $day) {
                 $begin = Carbon::parse($day['start']);
                 $end = Carbon::parse($day['end']);
 
-                if ($orderDate >= $begin && $orderDate < $end) {
                     $groupedOrders[
                         "{$begin->toDateTimeString()} - {$end->toDateTimeString()}"
-                    ][] = $order;
-                }
+                    ][] = $this->repository->getApprovedByDate($begin,$end);
+
             }
-        }
+
+
 
         //Get total count and total price from interval and fill the database
         $totalCount = 0;
         $totalPrice = 0;
         foreach ($groupedOrders as $groupedOrdersKey => $orders) {
-            foreach ($orders as $order) {
-                $totalCount += $order->getTotalCount();
-                $totalPrice += $order->getPrice();
+
+            foreach ($orders as $orderArr) {
+
+                    foreach ($orderArr as $order) {
+                        $totalCount += $order->getTotalCount();
+                        $totalPrice += $order->getPrice();
+                    }
+
             }
 
             $groupedOrders[$groupedOrdersKey]['total_count'] = $totalCount;
