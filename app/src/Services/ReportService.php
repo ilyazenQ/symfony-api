@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Entity\DailyReport;
 use App\Repository\OrderRepository;
+use ArrayIterator;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -27,9 +28,9 @@ class ReportService
         $reportClassName
     )
     {
-        $approvedOrders = $this->approvedOrders;
+        $approvedOrders =  new ArrayIterator($this->approvedOrders);
 
-        $groupedOrders = [];
+        $groupedOrders = new ArrayIterator();
 
         // Distribution within the interval
         foreach ($approvedOrders as $orderKey => $order) {
@@ -50,14 +51,13 @@ class ReportService
         //Get total count and total price from interval and fill the database
         $totalCount = 0;
         $totalPrice = 0;
+
         foreach ($groupedOrders as $groupedOrdersKey => $orders) {
+
             foreach ($orders as $order) {
                 $totalCount += $order->getTotalCount();
                 $totalPrice += $order->getPrice();
             }
-
-            $groupedOrders[$groupedOrdersKey]['total_count'] = $totalCount;
-            $groupedOrders[$groupedOrdersKey]['total_price'] = $totalPrice;
 
             $report = new $reportClassName();
             $report->setOrders($orders);
