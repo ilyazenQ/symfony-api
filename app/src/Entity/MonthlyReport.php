@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\DailyReportRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\MonthlyReportRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,16 +17,27 @@ class MonthlyReport
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'array',nullable: true)]
+    #[ORM\Column(type: 'array', nullable: true)]
     private array $orders = [];
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 150,
+        minMessage: 'Title must be at least {{ limit }} characters long',
+        maxMessage: 'Title cannot be longer than {{ limit }} characters',
+    )]
     private ?string $title = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\Positive]
     private ?int $total_count = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\PositiveOrZero]
     private ?int $total_price = null;
 
     public function getId(): ?int

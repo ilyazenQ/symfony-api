@@ -14,7 +14,7 @@ Composer, console доступны в php-cli, войти в контейнер:
 ```php
 docker exec -it <container php-cli id> bash
 ```
-Некоторые недоработки: нет валидации (где есть, не верная, через генерацию exception), нет resources и json ответы не полные, синхронное выполнение генерации отчетов (нет очередей и задач, поэтому с большими данными не работает, еще не разобрался с как в Symfony устроены job). <br>
+Некоторые недоработки: нет resources и json ответы не полные, синхронное выполнение генерации отчетов (нет очередей и задач, поэтому с большими данными не работает, еще не разобрался с как в Symfony устроены job). <br>
 ### Эндпоинты
 - #### http://localhost:8081/products/?order_field=<price/title>&order=<DESC/ASC> GET (Товары с сортировкой и пагинацией)
 Пример ответа: <br>
@@ -91,7 +91,8 @@ http://localhost:8081/order/21/approve/
 - #### http://localhost:8081/report/daily/create
 - #### http://localhost:8081/report/weekly/create
 - #### http://localhost:8081/report/monthly/create  GET (Создание отчетов)<br>
-Пример ответа: <br>
+- Также, создание отчетов доступно через консольные команды: report:daily,  report:weekly, report:monthly<br>
+  Пример ответа: <br>
 `
 "Success created"
 `

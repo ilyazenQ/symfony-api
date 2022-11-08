@@ -26,7 +26,7 @@ class AppFixtures extends Fixture
             $productPrices[$product->getId()] = $product->getPrice();
         }
         $dateBegin = new Carbon();
-        for ($i = 0; $i < 500; $i++) {
+        for ($i = 0; $i < 1000; $i++) {
             $count1 = mt_rand(1, 10);
             $count2 = mt_rand(1, 10);
             $id1 = array_rand($productIds, 1);

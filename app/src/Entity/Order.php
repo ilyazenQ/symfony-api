@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,15 +17,21 @@ class Order
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
     private array $Products = [];
 
     #[ORM\Column]
+    #[Assert\Type('boolean')]
     private ?bool $approved = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\PositiveOrZero]
     private ?int $price = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\Positive]
     private ?int $total_count = null;
 
     #[ORM\Column(nullable: true)]

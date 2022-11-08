@@ -1,34 +1,51 @@
 <?php
+
 namespace App\Services;
 
 use App\Actions\CalcOrderAttributeAction;
 use App\Actions\CheckProductsRequestAction;
 use App\Entity\Order;
+use App\Model\OrderModel;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class OrderService
 {
-
-    public function createOrder(
-        Request $request,
-        ProductRepository $productRepository,
-        EntityManagerInterface $entityManager
+    public function __construct(
+        private ValidatorInterface $validator
     )
     {
-        (new CheckProductsRequestAction())->execute($request, $productRepository);
-        (new CalcOrderAttributeAction())->execute($request, $productRepository);
+    }
 
+    public function createOrder(
+        Request                $request,
+        ProductRepository      $productRepository,
+        EntityManagerInterface $entityManager,
+    )
+    {
+        // Fill the order model
+        $orderModel = new OrderModel();
+
+        $orderModel->setProducts((array)$request->request->get('products'));
+        $orderModel->setApproved($request->request->get('approved') ?? false);
+        $orderModel->setApprovedAt($request->request->get('approved_at') ? new \DateTime($request->request->get('approved_at')) : null);
+
+        (new CalcOrderAttributeAction())->execute($orderModel, $productRepository);
+
+        // Fill the order entity
         $order = new Order();
-        $order->setPrice($request->request->get('price'));
-        $order->setTotalCount($request->request->get('total_count'));
-        $order->setApproved($request->request->get('approved') ?? false);
-        $order->setApprovedAt($request->request->get('approved_at')? new \DateTime($request->request->get('approved_at')) : null);
-        $order->setProducts($request->request->get('products'));
+        $order->setPrice($orderModel->getPrice());
+        $order->setTotalCount($orderModel->getTotalCount());
+        $order->setApproved($orderModel->getApproved());
+        $order->setApprovedAt($orderModel->getApprovedAt());
+        $order->setProducts($orderModel->getProducts());
+
+        $this->validateOrderEntity($order);
 
         $entityManager->persist($order);
         $entityManager->flush();
@@ -37,50 +54,59 @@ class OrderService
     }
 
     public function approveOrder(
-        Request $request,
-        OrderRepository $repository,
+        Request                $request,
+        OrderRepository        $repository,
         EntityManagerInterface $entityManager,
     )
     {
-        if(!$repository->existsById($request->get('id'))) {
-            throw new \Exception('Order not found');
-        }
-
         $order = $repository->find($request->get('id'));
-
-        if($order->isApproved()) {
-            throw new \Exception('Order already approved');
-        }
 
         $order->setApproved(true);
         $order->setApprovedAt(new \DateTime());
+        $this->validateOrderEntity($order);
+
+        $entityManager->persist($order);
         $entityManager->flush();
 
         return $order;
     }
 
     public function editOrder(
-        Request $request,
-        OrderRepository $repository,
-        ProductRepository $productRepository,
+        Request                $request,
+        OrderRepository        $repository,
+        ProductRepository      $productRepository,
         EntityManagerInterface $entityManager
-    ) {
-        (new CheckProductsRequestAction())->execute($request, $productRepository);
-        (new CalcOrderAttributeAction())->execute($request, $productRepository);
+    )
+    {
+        $orderModel = new OrderModel();
 
-        $order = $repository->find($request->get('id'));
+        $orderModel->setProducts((array)$request->request->get('products'));
+        $orderModel->setApproved($request->request->get('approved') ?? false);
+        $orderModel->setApprovedAt($request->request->get('approved_at') ? new \DateTime($request->request->get('approved_at')) : null);
 
-        if($order->isApproved()) {
-            throw new \Exception('Cant change. Order approved');
-        }
+        (new CalcOrderAttributeAction())->execute($orderModel, $productRepository);
 
-        $order->setPrice($request->request->get('price'));
-        $order->setTotalCount($request->request->get('total_count'));
-        $order->setProducts($request->request->get('products'));
+        $order = $repository->find($request->request->get('id'));
+
+        $order->setPrice($orderModel->getPrice());
+        $order->setTotalCount($orderModel->getTotalCount());
+        $order->setProducts($orderModel->getProducts());
+
+        $this->validateOrderEntity($order);
 
         $entityManager->persist($order);
         $entityManager->flush();
 
         return $order;
+    }
+
+    private function validateOrderEntity(Order $order)
+    {
+        $errors = $this->validator->validate($order);
+
+        if (count($errors) > 0) {
+            $errorsString = (string)$errors;
+            return new Response($errorsString);
+        }
     }
 }
